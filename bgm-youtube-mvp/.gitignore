@@ -1,0 +1,29 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+
+# secrets
+.env
+client_secret*.json
+token.json
+youtube_credentials.json
+
+# generated artifacts (kept out of git)
+output/
+*.wav
+*.mp3
+*.mp4
+*.png.tmp
+
+# model cache
+.cache/
+models/
+
+# OS
+.DS_Store
+Thumbs.db

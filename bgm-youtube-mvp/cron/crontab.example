@@ -1,0 +1,8 @@
+# Run the pipeline every day at 06:00 local time.
+# Install with:  crontab cron/crontab.example
+# Adjust PROJECT_DIR and PYTHON to match your environment.
+
+PROJECT_DIR=/home/youruser/bgm-youtube-mvp
+PYTHON=/home/youruser/bgm-youtube-mvp/.venv/bin/python
+
+0 6 * * *  cd $PROJECT_DIR && $PYTHON -m src.pipeline --config config.yaml >> output/cron.log 2>&1

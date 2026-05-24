@@ -1,0 +1,11 @@
+# One prompt per line. Lines starting with # are ignored.
+# The pipeline rotates through these (one per day by default).
+# Format suggestion: <mood/genre>, <instruments>, <tempo>, <vibe descriptor>
+lofi hip hop beat, mellow piano, soft vinyl crackle, 75 bpm, late night study vibe
+ambient piano with warm pads, slow tempo, gentle rain in the background, calm focus
+chill jazz quartet, brushed drums, walking bass, smoky bar atmosphere, 80 bpm
+acoustic guitar fingerpicking, soft strings, sunrise mood, 70 bpm, peaceful morning
+synthwave dream pop, mellow analog synths, 90 bpm, retro nostalgia, smooth night drive
+cinematic ambient, warm pads, slow swells, hopeful tone, 60 bpm, deep focus
+bossa nova guitar, light shaker, soft nylon strings, 95 bpm, cafe afternoon
+neo soul instrumental, electric piano, lazy drums, warm bass, 80 bpm, relaxed mood

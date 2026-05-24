@@ -1,0 +1,60 @@
+# Pipeline configuration. Edit freely.
+
+generation:
+  # MusicGen model: small (300M), medium (1.5B), large (3.3B), stereo-* variants
+  # 'medium' is a good quality/VRAM tradeoff (~8 GB VRAM). Use 'small' for 6 GB cards.
+  model: facebook/musicgen-medium
+  # Length of ONE generated clip in seconds. MusicGen max is 30s per call.
+  clip_seconds: 30
+  # How many distinct clips to generate per video. They are concatenated with
+  # short crossfades to reach the target length.
+  clips_per_video: 4
+  # Sampling
+  temperature: 1.0
+  top_k: 250
+  top_p: 0.0
+  cfg_coef: 3.0
+
+video:
+  # Final video duration in minutes. We loop the concatenated audio to fill it.
+  target_minutes: 60
+  # Crossfade between loops, in milliseconds.
+  loop_crossfade_ms: 2000
+  # Frame size and fps. 1080p / low fps keeps file size reasonable.
+  width: 1920
+  height: 1080
+  fps: 2
+  # Background image path. If missing, a solid color image is generated.
+  background_image: ./assets/background.jpg
+  background_color: "#0b1020"
+
+youtube:
+  # Choose: private | unlisted | public.  Start with 'private' to QA the output.
+  privacy: private
+  category_id: "10"  # 10 = Music
+  made_for_kids: false
+  # Tags applied to every upload (in addition to per-prompt tags).
+  base_tags:
+    - lofi
+    - study music
+    - chill beats
+    - relaxing music
+    - background music
+    - bgm
+  # Title / description templates. {prompt}, {date}, {duration_min}, {channel}
+  title_template: "[{duration_min}min] {prompt_short} - {channel}"
+  description_template: |
+    {prompt}
+
+    🎧 {duration_min} minutes of original AI-generated background music.
+    Perfect for studying, working, coding, or relaxing.
+
+    Generated with MusicGen and assembled automatically.
+    All music is original and royalty-free for personal listening.
+
+    #lofi #studymusic #bgm
+
+prompts_file: ./prompts/prompts.txt
+
+# How many seconds to wait between phases (helps avoid throttling on weak boxes).
+pacing_seconds: 2
