@@ -1,8 +1,12 @@
-"""BGM generation via MusicGen (Meta / audiocraft).
+"""BGM generation via MusicGen, using HuggingFace transformers.
 
-We generate N short clips (<=30s each, the model's hard cap), then concatenate
-them with short crossfades into a single seed track. The video module later
-loops this seed track until the target duration is reached.
+We use `transformers` rather than the standalone `audiocraft` package because
+audiocraft's build chain is fragile against modern setuptools / torch combos.
+The model weights are identical (Meta MusicGen on the HuggingFace hub).
+
+We generate N short clips, then concatenate them with short crossfades into
+a single seed track. The video module later loops this seed track until the
+target duration is reached.
 """
 from __future__ import annotations
 
@@ -10,8 +14,8 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from audiocraft.models import MusicGen
 from pydub import AudioSegment
+from transformers import AutoProcessor, MusicgenForConditionalGeneration
 
 from .config import GenerationConfig
 from .logger import get_logger
@@ -22,22 +26,19 @@ log = get_logger()
 def _pick_device(requested: str) -> str:
     if requested == "cuda" and torch.cuda.is_available():
         return "cuda"
-    if requested == "mps" and torch.backends.mps.is_available():
+    if requested == "mps" and getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
         return "mps"
     if requested in {"cuda", "mps"}:
         log.warning("device=%s not available, falling back to cpu", requested)
     return "cpu"
 
 
-def _tensor_to_segment(wav: torch.Tensor, sample_rate: int) -> AudioSegment:
-    """Convert a (channels, samples) float tensor to a pydub AudioSegment."""
-    arr = wav.detach().cpu().numpy()
+def _array_to_segment(arr: np.ndarray, sample_rate: int) -> AudioSegment:
+    """Convert a (channels?, samples) float array to a pydub AudioSegment."""
     if arr.ndim == 1:
         arr = arr[np.newaxis, :]
-    # MusicGen output is float32 in [-1, 1].
     arr = np.clip(arr, -1.0, 1.0)
     int16 = (arr * 32767.0).astype(np.int16)
-    # pydub expects interleaved bytes per sample.
     if int16.shape[0] == 1:
         interleaved = int16[0]
         channels = 1
@@ -50,6 +51,11 @@ def _tensor_to_segment(wav: torch.Tensor, sample_rate: int) -> AudioSegment:
         sample_width=2,
         channels=channels,
     )
+
+
+def _seconds_to_tokens(seconds: int, frame_rate: int) -> int:
+    """MusicGen generates audio tokens at a fixed frame rate (~50 Hz for small)."""
+    return max(1, int(seconds * frame_rate))
 
 
 def generate_seed_track(
@@ -65,28 +71,41 @@ def generate_seed_track(
 
     device = _pick_device(device)
     log.info("loading MusicGen model=%s on device=%s", cfg.model, device)
-    model = MusicGen.get_pretrained(cfg.model, device=device)
-    model.set_generation_params(
-        duration=cfg.clip_seconds,
-        temperature=cfg.temperature,
-        top_k=cfg.top_k,
-        top_p=cfg.top_p,
-        cfg_coef=cfg.cfg_coef,
-    )
+
+    processor = AutoProcessor.from_pretrained(cfg.model)
+    model = MusicgenForConditionalGeneration.from_pretrained(cfg.model).to(device)
+    model.eval()
+
+    sample_rate = model.config.audio_encoder.sampling_rate
+    frame_rate = model.config.audio_encoder.frame_rate
+    max_new_tokens = _seconds_to_tokens(cfg.clip_seconds, frame_rate)
 
     n = max(1, cfg.clips_per_video)
     log.info(
-        "generating %d clip(s) of %ds each for prompt=%r",
+        "generating %d clip(s) of ~%ds each (max_new_tokens=%d) for prompt=%r",
         n,
         cfg.clip_seconds,
+        max_new_tokens,
         prompt,
     )
-    # Generate sequentially to keep VRAM bounded.
+
     segments: list[AudioSegment] = []
     for i in range(n):
         log.info("  clip %d/%d", i + 1, n)
-        wav = model.generate([prompt])  # (batch=1, channels, samples)
-        seg = _tensor_to_segment(wav[0], model.sample_rate)
+        inputs = processor(text=[prompt], padding=True, return_tensors="pt").to(device)
+        with torch.inference_mode():
+            audio_values = model.generate(
+                **inputs,
+                do_sample=True,
+                guidance_scale=cfg.cfg_coef,
+                max_new_tokens=max_new_tokens,
+                temperature=cfg.temperature,
+                top_k=cfg.top_k,
+                top_p=cfg.top_p if cfg.top_p > 0 else 1.0,
+            )
+        # audio_values: (batch, channels, samples) float in [-1, 1]
+        arr = audio_values[0].detach().cpu().numpy()
+        seg = _array_to_segment(arr, sample_rate)
         segments.append(seg)
 
     combined = segments[0]
