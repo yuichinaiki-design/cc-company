@@ -1,0 +1,37 @@
+# CPU-friendly smoke profile. Use with:
+#   python -m src.pipeline --config config.cpu.yaml --no-upload
+# Reasonable wall-clock on a 4+ core CPU: ~10-20 min for 5s of audio.
+
+generation:
+  model: facebook/musicgen-small   # 300M params, fits in ~3 GB CPU RAM
+  clip_seconds: 5
+  clips_per_video: 1
+  temperature: 1.0
+  top_k: 250
+  top_p: 0.0
+  cfg_coef: 3.0
+
+video:
+  target_minutes: 1
+  loop_crossfade_ms: 500
+  width: 640
+  height: 360
+  fps: 1
+  background_image: ./assets/background.jpg
+  background_color: "#0b1020"
+
+youtube:
+  privacy: private
+  category_id: "10"
+  made_for_kids: false
+  base_tags:
+    - lofi
+    - bgm
+  title_template: "[{duration_min}min] {prompt_short} - {channel}"
+  description_template: |
+    {prompt}
+
+    Generated with MusicGen (smoke test).
+
+prompts_file: ./prompts/prompts.txt
+pacing_seconds: 0

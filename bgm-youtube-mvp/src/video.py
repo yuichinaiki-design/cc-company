@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from moviepy.editor import AudioFileClip, ImageClip
+from moviepy import AudioFileClip, ImageClip
 from PIL import Image, ImageDraw, ImageFont
 from pydub import AudioSegment
 
@@ -73,11 +73,11 @@ def build_video(
     audio_clip = AudioFileClip(str(full_wav))
     image_clip = (
         ImageClip(str(bg_path))
-        .set_duration(audio_clip.duration)
-        .resize((cfg.width, cfg.height))
-        .set_fps(cfg.fps)
+        .with_duration(audio_clip.duration)
+        .resized((cfg.width, cfg.height))
+        .with_fps(cfg.fps)
     )
-    video_clip = image_clip.set_audio(audio_clip)
+    video_clip = image_clip.with_audio(audio_clip)
 
     out_path = out_dir / f"{basename}.mp4"
     log.info("rendering %s (%.1f min)", out_path, audio_clip.duration / 60)
@@ -89,7 +89,6 @@ def build_video(
         preset="medium",
         threads=2,
         ffmpeg_params=["-pix_fmt", "yuv420p", "-tune", "stillimage"],
-        verbose=False,
         logger=None,
     )
     audio_clip.close()
