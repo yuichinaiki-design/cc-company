@@ -7,6 +7,11 @@ export default defineConfig({
 
   head: [["link", { rel: "icon", href: "/favicon.ico" }]],
 
+  markdown: {
+    // Obsidian の Dataview クエリは SQL 風なので sql として色付けする
+    languageAlias: { dataview: "sql" },
+  },
+
   locales: {
     root: {
       label: "日本語",
@@ -40,6 +45,10 @@ export default defineConfig({
                 { text: "秘書との日常", link: "/guide/daily-usage" },
                 { text: "部署を追加する", link: "/guide/adding-departments" },
                 { text: "MCP連携ガイド", link: "/guide/mcp-integration" },
+                {
+                  text: "Obsidian バックアップ",
+                  link: "/guide/obsidian-backup",
+                },
                 {
                   text: "v1 からのアップグレード",
                   link: "/guide/migration",
@@ -135,6 +144,10 @@ export default defineConfig({
                 {
                   text: "MCP Integration",
                   link: "/en/guide/mcp-integration",
+                },
+                {
+                  text: "Obsidian Backup",
+                  link: "/en/guide/obsidian-backup",
                 },
                 {
                   text: "Upgrading from v1",

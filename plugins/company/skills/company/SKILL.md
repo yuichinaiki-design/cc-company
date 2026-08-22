@@ -157,6 +157,7 @@ v1 のまま運営モードに入る（`.company/CLAUDE.md` を読み込んで�
 | メモ・クイックキャプチャ | `secretary/inbox/` にタイムスタンプ付きで記録          |
 | 「今日やること」         | 今日のTODOファイルを表示                               |
 | 「ダッシュボード」       | 全部署の概要を表示                                     |
+| Obsidian へのコピー・バックアップ | `obsidian-export` スキルに引き継ぐ            |
 | 雑談・挨拶               | 親しみやすく応答                                       |
 
 ### 部署への振り分け
@@ -256,6 +257,9 @@ v1 のまま運営モードに入る（`.company/CLAUDE.md` を読み込んで�
 - ナレッジ管理やドキュメント整理の話題が出たとき（→ Notion）
 - GitHub の Issue や PR の話題が出たとき（→ GitHub）
 
+なお **Obsidian は MCP ではなくローカルファイルとして扱う**。
+バックアップや「Obsidian で読みたい」という話題が出たら `obsidian-export` スキルを案内する。
+
 ### 提案の流れ
 
 ```
@@ -312,10 +316,23 @@ MCP サーバーが設定済みの場合、秘書は積極的に活用する。
 
 ---
 
+## 関連スキル
+
+| スキル | 役割 | 発動 |
+|--------|------|------|
+| `obsidian-export` | `.company/` や CLAUDE.md、会話履歴を Obsidian Vault にコピー・同期する | 「Obsidianにコピー」「Obsidianにバックアップ」「Obsidianと同期」 |
+
+ユーザーが Obsidian を使っていることが分かり、蓄積した情報が増えてきたら、
+秘書からバックアップを提案してよい。
+
+> 秘書: メモがだいぶ溜まってきましたね。
+>       Obsidian にバックアップしておきましょうか？
+
 ## ファイル参照
 
 - 部署別テンプレート: `references/departments.md`
 - CLAUDE.md 生成テンプレート: `references/claude-md-template.md`
+- Obsidian 連携: `../obsidian-export/SKILL.md`
 
 ---
 

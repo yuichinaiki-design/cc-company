@@ -14,11 +14,17 @@ cc-company/
 │       ├── .claude-plugin/
 │       │   └── plugin.json     ← プラグインメタデータ
 │       └── skills/
-│           └── company/
-│               ├── SKILL.md    ← スキル定義（ワークフロー全体）
-│               └── references/
-│                   ├── departments.md         ← 部署テンプレート集
-│                   └── claude-md-template.md  ← CLAUDE.md 生成テンプレート
+│           ├── company/
+│           │   ├── SKILL.md    ← スキル定義（ワークフロー全体）
+│           │   └── references/
+│           │       ├── departments.md         ← 部署テンプレート集
+│           │       └── claude-md-template.md  ← CLAUDE.md 生成テンプレート
+│           └── obsidian-export/
+│               ├── SKILL.md    ← Obsidian バックアップのワークフロー
+│               ├── references/
+│               │   └── vault-structure.md     ← Vault 構成・同期仕様
+│               └── scripts/
+│                   └── export-to-obsidian.mjs ← エクスポート本体
 ├── docs/                       ← ドキュメントサイト（VitePress）
 ├── package.json
 ├── README.md
@@ -83,3 +89,17 @@ cc-company/
 - **日付チェック**: ファイル操作前に必ず今日の日付を確認
 - **上書き禁止**: 既存ファイルは追記のみ
 - **迷ったら inbox**: 分類に迷ったら `secretary/inbox/` に入れる
+
+## Obsidian にコピーした場合の構成
+
+[Obsidian バックアップ](/guide/obsidian-backup) を実行すると、Vault 側にこの構成が作られます。
+
+```
+<Vault>/Claude/
+├── 000-Claude-MOC.md          ← 入口ノート
+├── company/                    ← .company/ のミラー
+├── memory/                     ← CLAUDE.md 群
+├── custom/                     ← skills / agents / commands
+├── history/                    ← 会話履歴（指定時のみ）
+└── .sync/manifest.json         ← 同期状態
+```

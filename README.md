@@ -88,6 +88,25 @@ Claude Code で仮想組織を構築・運営するプラグイン。
     └── notes/
 ```
 
+## Obsidian にバックアップ
+
+溜まった情報を Obsidian Vault にコピーできます。
+
+```
+> Obsidian にバックアップして
+
+秘書: Obsidian Vault の場所を教えてください。
+あなた: ~/Documents/ObsidianVault
+
+→ ドライランで件数を確認 → <Vault>/Claude/ にコピー
+```
+
+- `.company/` の組織データ、`CLAUDE.md` メモリ、カスタムスキルをコピー（会話履歴は任意）
+- Vault のファイルは削除しない。手編集したノートも上書きしない
+- 冪等。変更がなければ再実行しても書き込まない
+
+詳細は [Obsidian バックアップ](https://shin-sibainu.github.io/cc-company/guide/obsidian-backup) を参照。
+
 ## v1 からのアップグレード
 
 既存の v1 組織（CEO部門あり）がある場合、`/company` 実行時に自動でアップグレードを提案します。
@@ -108,11 +127,17 @@ cc-company/
 │       ├── .claude-plugin/
 │       │   └── plugin.json
 │       └── skills/
-│           └── company/
+│           ├── company/
+│           │   ├── SKILL.md
+│           │   └── references/
+│           │       ├── departments.md
+│           │       └── claude-md-template.md
+│           └── obsidian-export/
 │               ├── SKILL.md
-│               └── references/
-│                   ├── departments.md
-│                   └── claude-md-template.md
+│               ├── references/
+│               │   └── vault-structure.md
+│               └── scripts/
+│                   └── export-to-obsidian.mjs
 ├── README.md
 └── LICENSE
 ```

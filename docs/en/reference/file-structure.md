@@ -14,11 +14,17 @@ cc-company/
 │       ├── .claude-plugin/
 │       │   └── plugin.json     ← Plugin metadata
 │       └── skills/
-│           └── company/
-│               ├── SKILL.md    ← Skill definition (entire workflow)
-│               └── references/
-│                   ├── departments.md         ← Department templates
-│                   └── claude-md-template.md  ← CLAUDE.md generation template
+│           ├── company/
+│           │   ├── SKILL.md    ← Skill definition (entire workflow)
+│           │   └── references/
+│           │       ├── departments.md         ← Department templates
+│           │       └── claude-md-template.md  ← CLAUDE.md generation template
+│           └── obsidian-export/
+│               ├── SKILL.md    ← Obsidian backup workflow
+│               ├── references/
+│               │   └── vault-structure.md     ← Vault layout & sync semantics
+│               └── scripts/
+│                   └── export-to-obsidian.mjs ← The exporter itself
 ├── docs/                       ← This documentation (VitePress)
 ├── package.json
 ├── README.md
@@ -83,3 +89,17 @@ The `.company/` folder created after running `/company`.
 - **Date check**: Always verify today's date before file operations
 - **No overwriting**: Existing files are append-only
 - **When in doubt, inbox**: If unsure where to categorize, put it in `secretary/inbox/`
+
+## Layout After an Obsidian Export
+
+Running [Obsidian Backup](/en/guide/obsidian-backup) creates this structure in the vault.
+
+```
+<Vault>/Claude/
+├── 000-Claude-MOC.md          ← Entry note
+├── company/                    ← Mirror of .company/
+├── memory/                     ← CLAUDE.md files
+├── custom/                     ← skills / agents / commands
+├── history/                    ← Conversation history (on request)
+└── .sync/manifest.json         ← Sync state
+```
