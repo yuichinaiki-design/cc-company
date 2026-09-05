@@ -252,7 +252,7 @@ v1 のまま運営モードに入る（`.company/CLAUDE.md` を読み込んで�
 
 | パック | 場所 | 含まれる係 |
 | ------ | ---- | ---------- |
-| Amazonアフィリエイト | `references/roles/amazon-affiliate/` | ネタ探し係 → 記事を書く係 → 導線係 → 数字を見る係 |
+| Amazonアフィリエイト（デスク周り＋Amazonデバイス） | `references/roles/amazon-affiliate/` | ネタ探し係 → 記事を書く係 → 導線係 → 数字を見る係 |
 
 ### 使い方
 
