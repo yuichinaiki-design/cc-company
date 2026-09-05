@@ -112,7 +112,9 @@ cc-company/
 │               ├── SKILL.md
 │               └── references/
 │                   ├── departments.md
-│                   └── claude-md-template.md
+│                   ├── claude-md-template.md
+│                   └── roles/
+│                       └── amazon-affiliate/   ← 役割パック（係4人分）
 ├── README.md
 └── LICENSE
 ```
