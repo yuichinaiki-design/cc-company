@@ -70,5 +70,29 @@ For example, adding a Research department:
 | Sales | Client management, proposals |
 | Creative | Design briefs, brand management |
 | HR | Recruitment, team management |
+| Affiliate Operations | Product research, article writing, link placement, reviewing the numbers |
 
 See the [Departments Reference](/en/reference/departments) for details.
+
+## Assigning Roles (Role Packs)
+
+To split the work inside a department into named roles, use a role pack.
+
+```
+> Create four roles to run my Amazon affiliate site
+Secretary: There's a role pack for that. I'll create the Affiliate
+           Operations department and put the four role files in roles/.
+
+→ Four role files are generated under affiliate/roles/
+```
+
+Each role file is only four lines.
+
+1. **What this role does** — its scope
+2. **What you hand it** — the input
+3. **The shape you want back** — the output format (tables, row counts, columns)
+4. **What it must not do** — the prohibitions
+
+::: warning Fill in the genre-specific prohibitions yourself
+In the fourth line, the general program-terms and advertising-law prohibitions come filled in, but **the ones specific to your genre are left blank**. Only someone who knows the field can write those, so fill them in before you start.
+:::

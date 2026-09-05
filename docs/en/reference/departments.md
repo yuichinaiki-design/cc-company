@@ -146,3 +146,36 @@ hr/
 ```
 
 **Status:** `open` → `screening` → `interviewing` → `offered` → `filled` → `closed`
+
+---
+
+## Affiliate Operations
+
+**Handles:** Product research, article writing, link placement, reviewing the numbers
+
+```
+affiliate/
+├── CLAUDE.md
+├── roles/          ← Role definitions (copied from a role pack)
+├── research/       ← Candidate tables (1 file per round)
+├── articles/       ← Articles (1 file per article)
+└── reports/        ← Monthly numbers (1 file per month)
+```
+
+**Status (article):** `draft` → `writing` → `linked` → `published`
+
+`linked` means the link role has finished inserting the affiliate links and disclosures. The writing role and the link role hand off the same file.
+
+**Roles (role pack):**
+
+This department is run by four roles. Their definitions live in `roles/`.
+
+| Role | Handles |
+|------|---------|
+| Research | Decides the next product and keywords |
+| Writer | Turns it into an article the reader can choose from |
+| Link | Inserts affiliate links, disclosures and buttons |
+| Numbers | Reads the numbers and picks the one thing to fix next |
+
+Each role file is four lines: what this role does / what you hand it / the shape you want back / what it must not do.
+In the fourth line, the genre-specific prohibitions are left blank on purpose — fill those in yourself.

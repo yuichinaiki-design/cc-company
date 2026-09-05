@@ -18,7 +18,8 @@ cc-company/
 │               ├── SKILL.md    ← Skill definition (entire workflow)
 │               └── references/
 │                   ├── departments.md         ← Department templates
-│                   └── claude-md-template.md  ← CLAUDE.md generation template
+│                   ├── claude-md-template.md  ← CLAUDE.md generation template
+│                   └── roles/                 ← Role packs (role definitions)
 ├── docs/                       ← This documentation (VitePress)
 ├── package.json
 ├── README.md

@@ -18,7 +18,8 @@ cc-company/
 │               ├── SKILL.md    ← スキル定義（ワークフロー全体）
 │               └── references/
 │                   ├── departments.md         ← 部署テンプレート集
-│                   └── claude-md-template.md  ← CLAUDE.md 生成テンプレート
+│                   ├── claude-md-template.md  ← CLAUDE.md 生成テンプレート
+│                   └── roles/                 ← 役割パック（係の定義）
 ├── docs/                       ← ドキュメントサイト（VitePress）
 ├── package.json
 ├── README.md
