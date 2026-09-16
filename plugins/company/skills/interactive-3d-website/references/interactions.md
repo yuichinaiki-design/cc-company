@@ -3,7 +3,7 @@
 Astra は自力で Three.js を書けるが、**次の設計を最初の指示に入れておくと作り直しが無くなる。**
 コードは「こう組んでほしい」の見本。Claude Code / Cursor で自分が書くときもこのまま使える。
 
-目次: 1. 最短経路（`<model-viewer>`） / 2. 骨組み（HTML） / 3. 読み込みとライティング / 4. オービット / 5. クリックでパーツを単独表示 / 6. 分解スライダー / 7. スクロール連動カメラ / 8. キャラクターのアニメーション / 9. 軽さと堅牢さ / 10. React で組むなら / 11. QA の勘所
+目次: 1. 最短経路（`<model-viewer>`） / 2. 骨組み（HTML） / 3. 読み込みとライティング / 4. オービット / 5. クリックでパーツを単独表示 / 5b. ホットスポット（1 メッシュに説明ピン） / 6. 分解スライダー / 7. スクロール連動カメラ / 8. キャラクターのアニメーション / 9. 軽さと堅牢さ / 10. React で組むなら / 11. QA の勘所
 
 ---
 
@@ -16,6 +16,24 @@ Astra は自力で Three.js を書けるが、**次の設計を最初の指示�
 <model-viewer src="model.glb" poster="poster.jpg" alt="{製品名}の3Dモデル"
   camera-controls auto-rotate shadow-intensity="1" exposure="1"
   style="width:100%;height:100svh;background:#0b0b0c"></model-viewer>
+```
+
+**1 メッシュの GLB に「クリックで説明」を付けるだけなら、`<model-viewer>` のホットスポット**で足りる（パターン B-2）。ピンは HTML ボタンなので文字は検索でき、位置は 3D 座標で指定する。
+
+```html
+<model-viewer id="mv" src="model.glb" poster="poster.jpg" alt="{製品名}" camera-controls style="width:100%;height:100svh">
+  <button class="hotspot" slot="hotspot-usb" data-position="0.00 -0.02 0.05" data-normal="0 0 1" data-visibility-attribute="visible">USB-C 端子</button>
+  <button class="hotspot" slot="hotspot-led" data-position="0.00 0.01 0.05" data-normal="0 0 1" data-visibility-attribute="visible">充電 LED</button>
+</model-viewer>
+<style>.hotspot{border:0;border-radius:999px;padding:4px 10px;background:#fff;color:#111;font-size:12px}.hotspot:not([visible]){opacity:.3}</style>
+<script>
+// ピンの座標はモデル上をクリックして取る（開発時だけ有効にし、出た値を data-position / data-normal に写す）
+const mv = document.getElementById('mv');
+mv.addEventListener('click', (e) => {
+  const hit = mv.positionAndNormalFromPoint(e.clientX, e.clientY);
+  if (hit) console.log('position=', hit.position.toString(), 'normal=', hit.normal.toString());
+});
+</script>
 ```
 
 クリックで分離・分解スライダー・スクロール連動が要るなら、以下の Three.js に進む。
@@ -230,6 +248,51 @@ window.addEventListener('keydown', (e) => { if (e.key === 'Escape') reset(); });
 
 - 説明文は **メッシュ名がキー**。GLB のメッシュ名を先に一覧にして（`npx @gltf-transform/cli inspect`）、表と突き合わせる。名前が `Mesh_001` のような GLB は Blender で命名し直す
 - ホバーで光らせるなら `pointermove` で同じレイキャストをし、`material.emissive` を一時的に上げる（元の値を保存して戻す）
+
+---
+
+## 5b. ホットスポット（パターン B-2: 1 メッシュの GLB に説明ピン）
+
+写真から生成した GLB は 1 メッシュで、§5 の「クリックで単独表示」ができない。代わりに **3D 上の座標に HTML のピンを貼り、毎フレーム画面座標へ投影**する。
+ピンの座標はメッシュのバウンディングボックス（例: 上面中央 = `box.max.y`）か、開発時にレイキャストした `hit.point` をログして決める。
+
+```js
+// GLB 読み込み後（size 確定後）に実行する。3D 座標はモデル中心が原点、size はモデルの大きさ。説明はビルドシートの表から
+const HOTSPOTS = [
+  { id: 'usb', pos: new THREE.Vector3(0, -0.15, 0.5), title: 'USB-C 端子', desc: '……' },
+  { id: 'led', pos: new THREE.Vector3(0, 0.1, 0.5),  title: '充電 LED',  desc: '……' },
+].map((h) => ({ ...h, pos: h.pos.multiplyScalar(size) }));
+
+const layer = document.createElement('div'); // キャンバスの上に重ねる透明レイヤー
+layer.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+container.appendChild(layer);
+for (const h of HOTSPOTS) {
+  const b = document.createElement('button');
+  b.textContent = h.title; b.className = 'hotspot'; b.style.cssText = 'position:absolute;transform:translate(-50%,-50%);pointer-events:auto';
+  b.addEventListener('click', () => showPanel(h.title, h.desc));
+  layer.appendChild(b); h.el = b;
+}
+
+const v = new THREE.Vector3();
+function updateHotspots() {
+  const w = container.clientWidth, hgt = container.clientHeight;
+  for (const h of HOTSPOTS) {
+    v.copy(h.pos).project(camera);
+    const behind = v.z > 1;                      // カメラの後ろ
+    // モデルの裏側に回ったピンは薄くする（カメラからピンへ向くベクトルと、中心からピンへのベクトルの向き）
+    const facing = h.pos.clone().normalize().dot(camera.position.clone().sub(h.pos).normalize()) > 0;
+    h.el.style.left = `${(v.x * 0.5 + 0.5) * w}px`;
+    h.el.style.top = `${(-v.y * 0.5 + 0.5) * hgt}px`;
+    h.el.hidden = behind;
+    h.el.style.opacity = facing ? '1' : '0.3';
+  }
+}
+// アニメーションループ内で renderer.render(...) の後に updateHotspots();
+```
+
+- 説明パネルは §5 の `#panel` を使い回す（`showPanel` はタイトルと本文を入れて `hidden = false` にするだけ）
+- ピンの数は 3〜7 個に絞る。多いと重なって読めない
+- 物体が複数（本体＋ケース）なら、物体ごとに別 GLB で読み込み（分割生成）、§5 の単独表示と組み合わせる
 
 ---
 

@@ -25,6 +25,7 @@ Sites は、ChatGPT の中で Astra が **Web サイト・Web アプリ・ゲー
 
 - GLB や動画はサイトと一緒にホストされる。**重いファイルほど読み込みが遅い**ので、`3d-assets.md` §4 の軽量化を公開前に済ませる
 - 事例の URL は `moonlit-forge-studio.op7418.chatgpt.site` や `microduck-assembly-lab.yishan-lin.chatgpt.site` のように **slug + ユーザー名**の形。slug は短く覚えやすく
+- Sites 側の slug の制約は未確認。**英小文字・数字・ハイフンだけ、5 文字以上**にしておけば、§2 の Higgsfield website の規則にもそのまま使い回せる
 - 独自ドメインや DB が要るなら、次の Higgsfield website か自前ホスティングへ
 
 ---

@@ -18,7 +18,7 @@
 | D 歩ける世界 | **Hangzhou in Three.js**（SuSu） | 都市のオービット操作、ランドマークへのフライト、時間で変わる光 | Astra が Three.js で構築 | 投稿の動画 |
 | D 歩ける世界 | **Asteria Spaceship Explorer**（Weng Siong） | 宇宙船の外観と展望ラウンジから太陽系を眺める | React + Three.js + Blender | `asteria.wengsiong22.workers.dev` |
 | E キャラクター | Higgsfield 公式 **9 ステップ・プロンプト** | Soul 2.0 でキャラ設計 → テクスチャ付き 3D → Blender でリトポ・UV・リグ → Seedance 2.5 でカートゥーン化 | `prompts.md` §1-5 の原文 | 投稿 |
-| 製品可視化 | **Xen Studios のヘルスウェアラブル** | 4 面図から、パーツ分割済み・テクスチャ付き・アニメーション可能な 3D モデル | 「four-angle reference image から、最適化されたトポロジーと **分離されたコンポーネント**を持つモデルを構築」 | 投稿 |
+| 製品可視化 | **Xen Studios のヘルスウェアラブル** | 4 面図から、パーツ分割済み・テクスチャ付き・アニメーション可能な 3D モデル | 「four-angle reference image から、最適化されたトポロジーと **分離されたコンポーネント**を持つモデルを構築」。分離は **Blender / Cinema 4D の工程**で行っており、生成 API の直接出力ではない | 投稿 |
 
 ## 事例から借りるもの / 借りないもの
 

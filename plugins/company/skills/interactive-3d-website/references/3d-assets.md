@@ -22,6 +22,13 @@ no shadows, no text, no props. Orthographic look, sharp edges, true colors.
 - 手元に実物があるなら、白い紙の上で撮った写真 4 枚のほうが確実。
 - CLI: `higgsfield generate create gpt_image_2_5 --prompt "..." --wait`
 
+**写真が 1〜3 枚だけあるとき**: 3D 化に足りないのは「反対側」と「上下」。選択肢は 2 つ。
+
+1. **撮り足す** —— 白い紙の上、同じ距離・同じ高さで、背面と上面を撮る。一番確実
+2. **補完する** —— 手持ちの写真を参照画像として画像モデルに渡し、「同じ製品の背面図・上面図、同じスケール、白背景」を作らせる（`prompts.md` §1-2b）。ロゴ位置や端子の形が変わっていないか見比べる
+
+1 枚しか無いなら、まず `image_to_3d` で作ってみる。背面が崩れたら 2 に戻る。
+
 ---
 
 ## 2. GLB を作る — 5 つの 3D モデル
@@ -35,6 +42,13 @@ Higgsfield の 3D モデルは 5 つ。**どれも結果は GLB**（メッシュ
 | `tripo_3d` | Text to 3D | プロンプト | 参照画像が無い小物・抽象オブジェクト |
 | `sam_3_3d` | 3D Objects | 画像（＋対象を示すプロンプト） | 写真の中の 1 物体を切り出してテクスチャ付き GLB にする |
 | `3d_rigging` | 3D Rigging | 既存 GLB の URL | 出来上がった GLB にリグ・アニメーションを後付け |
+
+**複数の物体からなる製品**（本体＋充電ケース、左右一対のイヤホン、セット商品）は、**物体ごとに別の GLB** として生成し、サイト側で配置する。
+1 枚の写真に複数の物体を入れて 3D 化すると、物体どうしが融合した 1 メッシュになり、単独表示も分解もできなくなる。写真が一体で撮れているときは `sam_3_3d` に
+「the charging case」「the left earbud」と対象を指定して 1 物体ずつ切り出す。
+
+**フラグ名はモデルごとに違う。** 下の表は `image_to_3d` / `multi_image_to_3d` のもの。`tripo_3d` は `--texture` / `--pbr` / `--texture_quality` / `--geometry_quality` / `--face_limit`、
+`sam_3_3d` は `--export_textured_glb` / `--detection_threshold`。迷ったら `higgsfield model get <モデルID>` で正解を引く。
 
 ### 主なパラメータ（`image_to_3d` / `multi_image_to_3d` 共通）
 
@@ -91,7 +105,10 @@ higgsfield generate create 3d_rigging --model_url <GLBのURL> --enable_animation
 
 - **必ず GLB を開いて見る**。ブラウザの GLB ビューア（three.js editor など）か `npx @gltf-transform/cli inspect model.glb`（メッシュ数・頂点数・テクスチャサイズが出る）。
 - チェック: 穴 / 裏返った面 / テクスチャのにじみ / 想定と違う縮尺。だめなら **参照画像を足して作り直す**。生成物の手直しより早い。
-- **分解ビュー（パターン B）を作るなら、パーツごとにメッシュが分かれているか**を `inspect` で見る。写真から生成した GLB は 1 メッシュになりやすい。分けたいときは Blender で分割・命名するか、既存 CAD データから GLB を出す。
+- **分解ビュー（パターン B）を作るなら、パーツごとにメッシュが分かれているか**を `inspect` で見る。写真から生成した GLB は 1 メッシュになりやすい。1 メッシュだったときの選択肢は 3 つ:
+  1. **分割生成** —— 物体ごとに別 GLB を作ってサイト側で並べる（上記）
+  2. **ホットスポット** —— 1 メッシュのまま、3D 上の位置にピンを置いて説明を出す（`interactions.md` §1, §5b）
+  3. **Blender で分割・命名** —— Astra に Blender を操作させて部位ごとに切り分ける。Xen Studios の事例（`case-studies.md`）の「分離されたコンポーネント」は、この Blender / Cinema 4D 工程で作られたもので、生成 API の直接出力ではない
 
 ---
 
@@ -125,6 +142,9 @@ Three.js の `RoomEnvironment` で PBR マテリアルは十分きれいに光�
 ## 4. GLB の軽量化（Web に載せる前に必ず）
 
 目安: **GLB 合計 10〜20 MB 以下**、テクスチャは 2048px 以下、ポリゴンは合計 10〜30 万まで。
+
+**誰が実行するか**: 環境 (a) ChatGPT と (b) Supercomputer では、下のコマンドを **Astra / エージェントに実行させる**（「Draco 圧縮してテクスチャを 2048px に落として、前後のサイズを教えて」）。
+ユーザーにターミナルを開かせない。環境 (c) では Claude が自分で叩く。
 
 ```bash
 # 圧縮（Draco）＋テクスチャを WebP 化＋上限 2048px

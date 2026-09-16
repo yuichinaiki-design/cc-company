@@ -38,6 +38,25 @@ Enable PBR textures, keep it under 80,000 polygons, symmetry auto. Give me the G
 
 日本語: 「この 4 枚から Higgsfield の Multi-Image to 3D で、テクスチャと PBR 付き、8 万ポリゴン以下の GLB を作って。ダウンロードリンクをください」
 
+### 1-2b. 足りない面を写真から補完する（写真が 1〜3 枚のとき）
+
+```
+Using Higgsfield, generate the BACK view and the TOP view of the exact same product shown in these reference photos.
+Keep the same proportions, materials, logo placement and scale; pure white background, soft neutral light, no shadows, no text.
+```
+
+出来た画像は手持ちの写真と並べて、ロゴ位置・端子の形・比率が変わっていないか見る。
+
+### 1-2c. 部品ごとに別々の GLB を作る（分割生成）
+
+```
+Using Higgsfield, create SEPARATE textured 3D models (one GLB each) for: (1) the charging case with the lid closed,
+(2) the left earbud, (3) the right earbud. Same scale across all three, PBR textures, each under 40,000 polygons.
+Return three GLB links, named case.glb, earbud-left.glb, earbud-right.glb.
+```
+
+写真が一体で撮れているときは、先に `sam_3_3d` で 1 物体ずつ切り出す: 「Using Higgsfield 3D Objects, extract only the charging case from this photo as a textured GLB」。
+
 ### 1-3. 文章だけから GLB
 
 ```
@@ -84,7 +103,8 @@ Using Higgsfield (Seedance 2.5), generate ONE continuous 15-second shot with no 
 
 ## 2. サイトのビルド（Astra）
 
-**最初のメッセージには、下の雛形の前に「3D サイト・ビルドシート」を丸ごと貼る。** 雛形だけ送ると仕様が抜ける。
+**ビルドシートの末尾「Astra への最初のプロンプト」節に下の雛形を埋め、シート全文を最初のメッセージとして送る。**
+雛形だけ送ると仕様が抜け、シートと雛形を別々に送ると Astra が二重の指示に迷う。1 通で済ませる。
 
 ### パターン A: ショールーム
 
@@ -111,6 +131,20 @@ Everything must return to the exact original position at slider = 0.
 Must have: loading progress, mobile touch, poster fallback, HTML text for all descriptions, OG metadata.
 Output: publish to Sites as "{slug}". Preview first. Reply in Japanese.
 ```
+
+### パターン B-2: ホットスポット（1 メッシュの GLB に説明ピン）
+
+```
+Build an interactive 3D product page for {製品名} with Three.js (or <model-viewer>).
+Assets: model.glb (a single mesh generated with Higgsfield), poster.jpg, cover.jpg.
+Interactions: drag to orbit, wheel/pinch to zoom; 5 hotspots pinned to 3D positions on the model that open a side panel with a title and description:
+{ピン名: 説明 …}. Hotspots must stay attached while orbiting, fade when they face away from the camera, and be real HTML buttons (searchable, keyboard-focusable).
+First, load the model and let me click on it to print 3D positions to the console, so I can confirm where each pin goes; then wire the final positions.
+Must have: loading progress, mobile touch, poster fallback, HTML text for all descriptions, OG metadata.
+Output: publish to Sites as "{slug}". Preview first. Reply in Japanese.
+```
+
+複数の物体（本体＋ケース）を別々の GLB で作った場合は、パターン B の雛形に「load case.glb, earbud-left.glb, earbud-right.glb as separate objects」と足し、物体単位の単独表示にする。
 
 ### パターン C: スクロール・ジャーニー
 
