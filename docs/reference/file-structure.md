@@ -14,11 +14,14 @@ cc-company/
 │       ├── .claude-plugin/
 │       │   └── plugin.json     ← プラグインメタデータ
 │       └── skills/
-│           └── company/
-│               ├── SKILL.md    ← スキル定義（ワークフロー全体）
-│               └── references/
-│                   ├── departments.md         ← 部署テンプレート集
-│                   └── claude-md-template.md  ← CLAUDE.md 生成テンプレート
+│           ├── company/
+│           │   ├── SKILL.md    ← スキル定義（ワークフロー全体）
+│           │   └── references/
+│           │       ├── departments.md         ← 部署テンプレート集
+│           │       └── claude-md-template.md  ← CLAUDE.md 生成テンプレート
+│           └── interactive-3d-website/
+│               ├── SKILL.md    ← ChatGPT + Higgsfield で 3D サイトを作るワークフロー
+│               └── references/ ← セットアップ・素材・プロンプト・実装・公開・事例・出典
 ├── docs/                       ← ドキュメントサイト（VitePress）
 ├── package.json
 ├── README.md

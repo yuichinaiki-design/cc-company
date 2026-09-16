@@ -14,11 +14,14 @@ cc-company/
 │       ├── .claude-plugin/
 │       │   └── plugin.json     ← Plugin metadata
 │       └── skills/
-│           └── company/
-│               ├── SKILL.md    ← Skill definition (entire workflow)
-│               └── references/
-│                   ├── departments.md         ← Department templates
-│                   └── claude-md-template.md  ← CLAUDE.md generation template
+│           ├── company/
+│           │   ├── SKILL.md    ← Skill definition (entire workflow)
+│           │   └── references/
+│           │       ├── departments.md         ← Department templates
+│           │       └── claude-md-template.md  ← CLAUDE.md generation template
+│           └── interactive-3d-website/
+│               ├── SKILL.md    ← Workflow for building 3D websites with ChatGPT + Higgsfield
+│               └── references/ ← Setup, assets, prompts, implementation, publishing, cases, sources
 ├── docs/                       ← This documentation (VitePress)
 ├── package.json
 ├── README.md
