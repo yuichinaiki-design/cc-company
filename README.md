@@ -108,16 +108,29 @@ cc-company/
 │       ├── .claude-plugin/
 │       │   └── plugin.json
 │       └── skills/
-│           └── company/
+│           ├── company/
+│           │   ├── SKILL.md
+│           │   └── references/
+│           │       ├── departments.md
+│           │       ├── claude-md-template.md
+│           │       └── roles/
+│           │           └── amazon-affiliate/   ← 役割パック（係4人分）
+│           └── interactive-3d-website/         ← ChatGPT + Higgsfield で 3D サイトを作るスキル
 │               ├── SKILL.md
 │               └── references/
-│                   ├── departments.md
-│                   ├── claude-md-template.md
-│                   └── roles/
-│                       └── amazon-affiliate/   ← 役割パック（係4人分）
 ├── README.md
 └── LICENSE
 ```
+
+## 追加スキル
+
+`/company` のほかに、単体で呼べるスキルを同じプラグインに入れています。
+
+| スキル | 呼び出し | 何をするか |
+|------|---------|-----------|
+| インタラクティブ 3D Web サイト | `/interactive-3d-website` | ChatGPT（GPT-6 Astra）と Higgsfield で、回せる・分解できる・スクロールで動く 3D サイトを企画から公開まで作る。素材は Higgsfield（GLB / 画像 / 動画）、サイトは Astra、公開は ChatGPT Sites / Higgsfield website / 自前ホスティング |
+
+「3D サイト」「回せる LP」「Three.js」「Higgsfield で 3D」と話しかけると、秘書からもこのスキルに繋がります。
 
 ## ライセンス
 
